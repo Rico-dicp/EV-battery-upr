@@ -1,48 +1,52 @@
-以81_NMC数据集为例，顺序处理数据，计算结果。放电下限为2.8V，充电上限为4.25V（工况选取小电流CC，暂不考虑CV)，每一步的输出是下一个文件的输入
+Data Processing is the script for the data computation pipeline, while example for running contains sample data that can be executed directly.
 
-1.数据清洗与切片
-输出：
-data.to_csv(f'Processed data storage file/{m}_chulihou.csv', index=False)
-tbl.to_csv(f'Processed data storage file_segments/{m}_tbl.csv', index=False)
+Using the 81_NMC dataset as an example, the Data Processing script sequentially handles the data and computes results. The discharge lower limit is 2.8V, and the charge upper limit is 4.25V (only constant current (CC) segments are selected, constant voltage (CV) is not considered for now). The output of each step serves as the input for the next step.
 
-2.初步筛选适用车辆
-输出：
-data.to_csv('Extracted data storage file/'+name+'data.csv')
-tbl04.to_csv('Extracted data storage file_segments_tbl/'+name+'tbl04.csv')
+Data cleaning and segmentation
+Output:
 
-3.OCV-SOC曲线获取
-输出：
-SOC-OCV曲线参数
+Processed data: Processed data storage file/{m}_chulihou.csv
 
+Segment table: Processed data storage file_segments/{m}_tbl.csv
 
-4.PSO参数辨识：375V到385V区间段参数辨识
-输出：
-每车辨识得到11个参数辨识结果数据表，位于Battery parameters/
+Preliminary filtering of applicable vehicles
+Output:
 
-5.温度信息补充
-中间输出：'data_with_temperature/'+name+'tbl04.csv'
-之后读取：
-r0_df = pd.read_csv(f'Battery parameters/{name}r0_df.csv')
-soh_df = pd.read_csv(f'Battery parameters/{name}soh_df.csv')
-tbl04 = pd.read_csv('data_with_temperature/'+name+'tbl04.csv')
-输出：'Battery parameters/results need to be fixed_filted.csv'
+Extracted data: Extracted data storage file/{name}data.csv
 
-5.5神经网络模型修正结果为25摄氏度下的参数值，产出了两个pikle,分别对应r与ca
+Segment info: Extracted data storage file_segments_tbl/{name}tbl04.csv
 
-6计算了全部的NMC与温度修正后数据融合后结果，用于后续指标计算与出图
-输出
-filted_soh_df.to_csv('Battery parameters_tem_fixed/'+name+'filtered_soh.csv')
-new_df.to_csv('Battery parameters_tem_fixed/'+name+'soh_for_line.csv')
+OCV-SOC curve acquisition
+Output:
 
-7.指标计算
-输出：指标参数列表
-indicator_list.to_csv('Battery parameters/'+'final_α'+'.csv',index=False)   
+SOC-OCV curve parameters
 
+PSO parameter identification in the 375V to 385V voltage range
+Output:
 
+Each vehicle produces a parameter identification result table with 11 parameters, stored in the Battery parameters/ directory
 
+Supplementing temperature information
+Intermediate output: data_with_temperature/{name}tbl04.csv
+Subsequent reads:
 
+r0_df = Battery parameters/{name}r0_df.csv
 
+soh_df = Battery parameters/{name}soh_df.csv
 
+tbl04 = data_with_temperature/{name}tbl04.csv
+Final output: Battery parameters/results need to be fixed_filted.csv
 
+5.5 Neural network model corrects parameters to values under 25°C, and produces two pickle files corresponding to r and ca.
 
+After merging all NMC data and temperature-corrected results, the data is used for subsequent indicator calculation and visualization
+Output:
 
+Filtered SOH: Battery parameters_tem_fixed/{name}filtered_soh.csv
+
+For plotting: Battery parameters_tem_fixed/{name}soh_for_line.csv
+
+Indicator calculation
+Output:
+
+Final indicator parameter list: Battery parameters/final_α.csv
