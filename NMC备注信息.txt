@@ -20,23 +20,23 @@ SOC-OCV曲线参数
 每车辨识得到11个参数辨识结果数据表，位于Battery parameters/
 
 5.温度信息补充
-中间输出：'G:/DBD4数据/DIHAO,参数提取片段与数据,温度补充/'+name+'tbl04.csv'
+中间输出：'data_with_temperature/'+name+'tbl04.csv'
 之后读取：
-r0_df = pd.read_csv(f'C:/Users/13121/Desktop/Story 1/Vehicles/{name}r0_df.csv')
-soh_df = pd.read_csv(f'C:/Users/13121/Desktop/Story 1/Vehicles/{name}soh_df.csv')
-tbl04 = pd.read_csv('G:/DBD4数据/DIHAO,参数提取片段与数据,温度补充/'+name+'tbl04.csv')
-输出：'C:/Users/13121/Desktop/Story 1/results need to be fixed_filted.csv'
+r0_df = pd.read_csv(f'Battery parameters/{name}r0_df.csv')
+soh_df = pd.read_csv(f'Battery parameters/{name}soh_df.csv')
+tbl04 = pd.read_csv('data_with_temperature/'+name+'tbl04.csv')
+输出：'Battery parameters/results need to be fixed_filted.csv'
 
 5.5神经网络模型修正结果为25摄氏度下的参数值，产出了两个pikle,分别对应r与ca
 
 6计算了全部的NMC与温度修正后数据融合后结果，用于后续指标计算与出图
 输出
-filted_soh_df.to_csv('E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/NMC-PV cap 温度修正结果/'+name+'filtered_soh.csv')
-new_df.to_csv('E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/NMC-PV cap 温度修正结果/'+name+'soh_for_line.csv')
+filted_soh_df.to_csv('Battery parameters_tem_fixed/'+name+'filtered_soh.csv')
+new_df.to_csv('Battery parameters_tem_fixed/'+name+'soh_for_line.csv')
 
 7.指标计算
 输出：指标参数列表
-indicator_list.to_csv('E:/My Craft/Lab/论文_zlt/DBD 4/5.0 Transform data/Results/'+'final_α'+'.csv',index=False)   最终指标的大表
+indicator_list.to_csv('Battery parameters/'+'final_α'+'.csv',index=False)   
 
 
 
