@@ -1,4 +1,4 @@
-Data Processing is the script for the data computation pipeline, while example for running contains sample data that can be executed directly.
+'Data Processing' is the script for the data computation pipeline, while 'Example for Running' contains sample data and code that can be executed directly.
 
 Using the 81_NMC dataset as an example, the Data Processing script sequentially handles the data and computes results. The discharge lower limit is 2.8V, and the charge upper limit is 4.25V (only constant current (CC) segments are selected, constant voltage (CV) is not considered for now). The output of each step serves as the input for the next step.
 
