@@ -1,138 +1,49 @@
-放电下限为2.8V，充电上限为4.25V（小电流CC，暂不考虑CV)
+以81_NMC数据集为例，顺序处理数据，计算结果。放电下限为2.8V，充电上限为4.25V（工况选取小电流CC，暂不考虑CV)，每一步的输出是下一个文件的输入
 
-1）预处理参考的北汽，但是源代码发现有一个单体展开的91没有改掉
-81辆车
-①找到真正的预处理程序
-②找到LFP预处理看自己到底怎么写的
-③读取前若干行数据，观察结果有无问题，数据没有问题，所以可能是代码的问题（找错源代码）。
-
-映射：E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/暂时不用的程序，只做参考/New vehicles.py后半段
-
-原数据：G:/数据/吉利原始数据/
-
-处理后：G:/DBD4数据/处理后数据/
-G:/DBD4数据/处理后数据/'+m+'_chulihou.csv与H:/DBD4数据/片段数据/'+m+'_tbl.csv
-
-
-
-2）给数据做瘦身
-
-映射：E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/暂时不用的程序，只做参考/New vehicles.py前半段
-
-读取预处理成果，输出以下两项
-data.to_csv('G:/DBD4数据/DIHAO,参数提取片段与数据/'+name+'data.csv')
-tbl04.to_csv('G:/DBD4数据/DIHAO,参数提取片段与数据/'+name+'tbl04.csv')
-
-
-
-3）OCV-SOC曲线获取
-
-映射：E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/indicators 4 与 indicators 5观察哨.py
-
-输入：
-DBD3粒子滤波的样本车：
-data=pd.read_csv('C:/Users/13121/Desktop/DBD4 trying/粒子群优化/'+'data.csv', index_col=0)
-tbl04=pd.read_csv('C:/Users/13121/Desktop/DBD4 trying/粒子群优化/'+'tbl04.csv', index_col=0)
+1.数据清洗与切片
 输出：
-SOC-OCV参数，以及OCV的曲线
+data.to_csv(f'Processed data storage file/{m}_chulihou.csv', index=False)
+tbl.to_csv(f'Processed data storage file_segments/{m}_tbl.csv', index=False)
+
+2.初步筛选适用车辆
+输出：
+data.to_csv('Extracted data storage file/'+name+'data.csv')
+tbl04.to_csv('Extracted data storage file_segments_tbl/'+name+'tbl04.csv')
+
+3.OCV-SOC曲线获取
+输出：
+SOC-OCV曲线参数
 
 
+4.PSO参数辨识：375V到385V区间段参数辨识
+输出：
+每车辨识得到11个参数辨识结果数据表，位于Battery parameters/
 
-4）PSO参数辨识：375V到385V区间段参数辨识，35辆车被辨识出结果，最后19辆车能用
-
-映射：E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/Story 1.4.py
-
-读取数据G:/DBD4数据/DIHAO,参数提取片段与数据/，读取其中的data.csv与tbl04.csv
-
-每车11个参数辨识结果数据表，位于E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/Vehicles
-
-
-
-5）温度信息补充
+5.温度信息补充
 映射：E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/Story 4.2.py
-
-中间的输出数据：'G:/DBD4数据/DIHAO,参数提取片段与数据,温度补充/'+name+'tbl04.csv'
+中间输出：'G:/DBD4数据/DIHAO,参数提取片段与数据,温度补充/'+name+'tbl04.csv'
 之后读取：
 r0_df = pd.read_csv(f'C:/Users/13121/Desktop/Story 1/Vehicles/{name}r0_df.csv')
 soh_df = pd.read_csv(f'C:/Users/13121/Desktop/Story 1/Vehicles/{name}soh_df.csv')
 tbl04 = pd.read_csv('G:/DBD4数据/DIHAO,参数提取片段与数据,温度补充/'+name+'tbl04.csv')
 输出：'C:/Users/13121/Desktop/Story 1/results need to be fixed_filted.csv'
 
-一舟那边神经网络修正温度到25摄氏度，产出了两个pikle,分别对应r与cap
+5.5神经网络模型修正结果为25摄氏度下的参数值，产出了两个pikle,分别对应r与ca
 
-
-
-
-6）出图程序①：一舟的结果读取，出图
-映射：E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/一舟结果读取，与出图更新/Temperature Fix.py
-
-输入，两个一舟的结果Pikle，某车辆cap与R0两个指标的辨识结果
-输出某车型两个指标出图用的数据，以及两个数据融合后的数据
-四张结果辨识图
-
-
-
-
-6.5）
-计算了全部的NMC与温度修正后数据融合后结果，用于后续指标计算与出图
-
-输入
-r0_df = pd.read_csv(f'E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/Vehicles/{name}r0_df.csv')
-soh_df = pd.read_csv(f'E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/Vehicles/{name}soh_df.csv')
-pickle_file_path = 'E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/一舟结果读取，与出图更新/cap_compare.pickle'
-
+6计算了全部的NMC与温度修正后数据融合后结果，用于后续指标计算与出图
 输出
 filted_soh_df.to_csv('E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/NMC-PV cap 温度修正结果/'+name+'filtered_soh.csv')
 new_df.to_csv('E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/NMC-PV cap 温度修正结果/'+name+'soh_for_line.csv')
 
-
-
-
-7）指标计算（需要更新一舟的结果）
-前两个指标各自增加一列，把new_α3直接算出来
-映射：E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/Story 3.0.py  与  E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/暂时不用的程序，只做参考/Story 2.0.py
-输入：
-r0_df=pd.read_csv('E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/Vehicles/'+name+'r0_df'+'.csv')
-soh_df=pd.read_csv('E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/Vehicles/'+name+'soh_df'+'.csv')
-#soh需要做个数据融合
-filted_soh_df=pd.read_csv('E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/NMC-PV cap 温度修正结果/filtered_soh.csv')    
-soc_df=pd.read_csv('E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/Vehicles/'+name+'soc_df'+'.csv')
-rp_df=pd.read_csv('E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/Vehicles/'+name+'rp_df'+'.csv')
-cp_df=pd.read_csv('E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/Vehicles/'+name+'cp_df'+'.csv')
-jiezhiSOC_df=pd.read_csv('E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/Vehicles/'+name+'jiezhiSOC_df'+'.csv')
-
-x=pd.read_csv('G:/DBD4数据/DIHAO,参数提取片段与数据/'+name+'data.csv', index_col=0)
-a=pd.read_csv('E:/My Craft/Lab/论文_zlt/DBD 4/5.0 Transform data/Indicators/'+name+'α_df'+'.csv')
-pd.read_csv('E:/My Craft/Lab/论文_zlt/DBD 4/5.0 Transform data/Results/'+'new_α3'+'.csv')
-输出：
-指标参数列表
-a.to_csv('E:/My Craft/Lab/论文_zlt/DBD 4/5.0 Transform data/Indicators/'+name+'α_df'+'.csv',index=False)           每辆车的初步指标结果
-indicator_list.to_csv('E:/My Craft/Lab/论文_zlt/DBD 4/5.0 Transform data/Results/'+'new_α3'+'.csv',index=False)  比较新的第三号指标结果，这个是最全的计算结果，后续代码计算整体利用率会把这个表截断到木桶效应发生的点
+7.指标计算
+输出：指标参数列表
 indicator_list.to_csv('E:/My Craft/Lab/论文_zlt/DBD 4/5.0 Transform data/Results/'+'final_α'+'.csv',index=False)   最终指标的大表
 
-有3到4辆车的温度修正效果并不好，重新处理了下结果
 
 
-7.1）与 7.2）对每辆车适应的片段（与之前出温度修正后结果目标一致），计算得出能量相关参数
-输出存储：E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/Energy增补数据/
-
-7.3）是滤波，计算新指标的程序，在9里补充出图
-输入    
-energy_df=pd.read_csv('E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/Energy增补数据/'+name+'energy_df.csv')
-输出
-svr_energy_df.to_csv('E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/Energy滤波结果，出图用/svr'+name+'.csv', index='False')
-energy_df.to_csv('E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/Energy滤波结果，出图用/svr_origin'+name+'.csv', index='False')
-继续输入
-indicator_list=pd.read_csv('E:/My Craft/Lab/论文_zlt/DBD 4/5.0 Transform data/Results/'+'new_α3'+'.csv')
-输出
-indicator_list.to_csv('E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/Energy滤波结果，出图用/New_indicators'+'.csv',index=False)
 
 
-8）出图程序②：5个指标的参数
-Times New Roman 出图
 
 
-9）出图程序③：补充出图
-暂时不做，先补充正文
 
 
