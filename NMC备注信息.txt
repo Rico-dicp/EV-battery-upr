@@ -20,7 +20,6 @@ SOC-OCV曲线参数
 每车辨识得到11个参数辨识结果数据表，位于Battery parameters/
 
 5.温度信息补充
-映射：E:/My Craft/Lab/论文_zlt/DBD 4/3.0 Source code and figures/Story 1/Story 4.2.py
 中间输出：'G:/DBD4数据/DIHAO,参数提取片段与数据,温度补充/'+name+'tbl04.csv'
 之后读取：
 r0_df = pd.read_csv(f'C:/Users/13121/Desktop/Story 1/Vehicles/{name}r0_df.csv')
